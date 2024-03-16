@@ -21,7 +21,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/createPost").authenticated()
                 .antMatchers("/viewAllPosts").authenticated()
-                .antMatchers("/signup", "/login").permitAll()  // Allow sign-up and login without authentication
+                .antMatchers("/signup", "/login", "/emailExists", "/codeExists").permitAll()  // Allow sign-up and login without authentication
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()

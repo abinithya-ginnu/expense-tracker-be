@@ -1,19 +1,18 @@
-package com.ictak.expensetrackerbe.models;
+package com.ictak.expensetrackerbe.dbmodels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
-public class User {
+@Table(name = "users")
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @JsonProperty("user_name")
-    private String userName;
+    @JsonProperty("name")
+    private String name;
+    private String email;
     @JsonProperty("password")
     private String password;
     @JsonProperty("is_admin")
@@ -21,12 +20,13 @@ public class User {
     @JsonProperty("family_id")
     private int familyId;
 
-    public User() {
+    public UserEntity() {
     }
 
-    public User(int id, String userName, String password, boolean isAdmin, int familyId) {
+    public UserEntity(int id, String name, String email, String password, boolean isAdmin, int familyId) {
         this.id = id;
-        this.userName = userName;
+        this.name = name;
+        this.email = email;
         this.password = password;
         this.isAdmin = isAdmin;
         this.familyId = familyId;
@@ -40,12 +40,20 @@ public class User {
         this.id = id;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getName() {
+        return name;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
