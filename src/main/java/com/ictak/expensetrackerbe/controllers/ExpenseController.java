@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +40,7 @@ public class ExpenseController {
                 response.put("code", 200);
                 response.put("categories", result);
             } else {
-                response.put("code", "404");
+                response.put("code", 404);
                 response.put("categories", new ArrayList<>());
             }
         } catch (Exception e){
@@ -61,7 +62,7 @@ public class ExpenseController {
                 response.put("code", 200);
                 response.put("paymentTypes", result);
             } else {
-                response.put("code", "404");
+                response.put("code", 404);
                 response.put("paymentTypes", new ArrayList<>());
             }
         } catch (Exception e){
@@ -82,6 +83,8 @@ public class ExpenseController {
 
             if (authentication.isAuthenticated())
             {
+                expense.setCreatedDate(LocalDateTime.now());
+                expense.setModifiedDate(LocalDateTime.now());
                 ExpenseEntity result = expenseRepository.save(expense);
                 response.put("status", "success");
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);

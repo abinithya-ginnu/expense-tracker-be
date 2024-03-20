@@ -1,8 +1,17 @@
 package com.ictak.expensetrackerbe.dbmodels;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Entity
@@ -17,17 +26,23 @@ public class ExpenseEntity {
     private String title;
     private double amount;
     private double gst;
-    private Date date;
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime date;
     private String payee;
     private String category;
     @JsonProperty("payment_type")
     private String paymentType;
     private String description;
+    @JsonProperty("created_date")
+    private LocalDateTime createdDate;
+    @JsonProperty("modified_date")
+    private LocalDateTime modifiedDate;
 
     public ExpenseEntity() {
     }
 
-    public ExpenseEntity(int id, String title, double amount, double gst, Date date, String payee, String category, String paymentType, String description, int userId) {
+    public ExpenseEntity(int id, String title, double amount, double gst, LocalDateTime date, String payee, String category, String paymentType, String description, int userId) {
         this.id = id;
         this.title = title;
         this.amount = amount;
@@ -72,11 +87,11 @@ public class ExpenseEntity {
         this.gst = gst;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
@@ -118,5 +133,19 @@ public class ExpenseEntity {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+    public LocalDateTime getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(LocalDateTime modifiedDate) {
+        this.modifiedDate = modifiedDate;
     }
 }
