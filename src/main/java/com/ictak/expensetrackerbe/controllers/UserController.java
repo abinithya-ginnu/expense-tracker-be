@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -107,6 +109,8 @@ public class UserController {
             userData.setPassword(user.getPassword());
             userData.setFamilyId(familyId);
             userData.setAdmin(isAdmin);
+            userData.setCreatedDate(LocalDateTime.now());
+            userData.setModifiedDate(LocalDateTime.now());
             UserEntity result = userRepository.save(userData);
             response.put("status", "success");
             response.put("code", 201);
