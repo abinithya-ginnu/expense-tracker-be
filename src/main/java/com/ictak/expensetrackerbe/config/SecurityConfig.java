@@ -20,6 +20,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/addExpense").authenticated()
+                .antMatchers("/addIncome").authenticated()
                 .antMatchers("/signup", "/login", "/emailExists", "/codeExists","/categories","/paymentTypes").permitAll()  // Allow sign-up and login without authentication
                 .anyRequest().authenticated()
                 .and()
