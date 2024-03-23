@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +33,7 @@ public class UserController {
                 response.put("code", 200);
                 response.put("userId", userData.getId());
                 response.put("isAdmin", userData.isAdmin());
+                response.put("name", userData.getName());
                 response.put("token", JwtUtils.generateToken(userData.getEmail()));
             } else {
                 response.put("code", "404");
@@ -100,6 +100,8 @@ public class UserController {
                 isAdmin = true;
                 FamilyEntity familyData = new FamilyEntity();
                 familyData.setCode(user.getUniqueCode());
+                familyData.setCreatedDate(LocalDateTime.now());
+                familyData.setModifiedDate(LocalDateTime.now());
                 FamilyEntity family = familyRepository.save(familyData);
                 familyId = family.getId();
             }
@@ -116,6 +118,7 @@ public class UserController {
             response.put("code", 201);
             response.put("id", result.getId());
             response.put("isAdmin", result.isAdmin());
+            response.put("name", result.getName());
             response.put("token", JwtUtils.generateToken(result.getEmail()));
         } catch (Exception ex) {
             response.put("status", "error");

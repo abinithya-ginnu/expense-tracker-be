@@ -1,6 +1,9 @@
 package com.ictak.expensetrackerbe.dbmodels;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name="paymentType")
@@ -11,6 +14,12 @@ public class PaymentTypeEntity {
     private int id;
 
     private String type;
+    @JsonProperty("created_date")
+    private LocalDateTime createdDate;
+    @JsonProperty("modified_date")
+    private LocalDateTime modifiedDate;
+
+
 
     public PaymentTypeEntity() {
     }
@@ -34,5 +43,20 @@ public class PaymentTypeEntity {
 
     public void setType(String type) {
         this.type = type;
+    }
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public LocalDateTime getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(LocalDateTime modifiedDate) {
+        this.modifiedDate = modifiedDate;
     }
 }
