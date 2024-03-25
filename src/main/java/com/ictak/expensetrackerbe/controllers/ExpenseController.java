@@ -52,7 +52,7 @@ public class ExpenseController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping("/paymentTypes")
+    @GetMapping("/paymenttypes")
     public ResponseEntity<Map<String, Object>> getPaymentTypes() {
         Map<String, Object> response = new HashMap<>();
         try{
@@ -74,7 +74,7 @@ public class ExpenseController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
-    @PostMapping("/addExpense")
+    @PostMapping("/addexpense")
     public ResponseEntity<Map<String, Object>> createExpense (@RequestHeader(name = "Authorization") String token,
                                                               @RequestBody ExpenseEntity expense){
         Map<String, Object> response = new HashMap<>();
