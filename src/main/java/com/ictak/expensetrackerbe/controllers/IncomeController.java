@@ -19,7 +19,7 @@ public class IncomeController {
     private IncomeRepository incomeRepository;
 
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
-    @PostMapping("/addIncome")
+    @PostMapping("/addincome")
     public ResponseEntity<Map<String, Object>> createIncome (@RequestHeader(name = "Authorization") String token,
                                                              @RequestBody IncomeEntity income){
 
