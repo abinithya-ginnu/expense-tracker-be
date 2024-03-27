@@ -44,4 +44,10 @@ public interface IncomeRepository extends JpaRepository<IncomeEntity, Integer> {
             "ORDER BY modified_date DESC\n" +
             "LIMIT 10", nativeQuery = true)
     List<Map<String, Object>> getRecentTransactions(int userId);
+    @Query(value = "SELECT * FROM INCOMES where user_id=?1", nativeQuery = true)
+    List<IncomeEntity> getIncomes(int userId);
+
+
+
+
 }

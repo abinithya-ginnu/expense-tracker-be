@@ -13,6 +13,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "expenses")
@@ -39,8 +41,15 @@ public class ExpenseEntity {
     @JsonProperty("modified_date")
     private LocalDateTime modifiedDate;
 
+    @JsonProperty("type_of")
+    private String typeof;
+
+
+
     public ExpenseEntity() {
     }
+
+
 
     public ExpenseEntity(int id, String title, double amount, double gst, LocalDateTime date, String payee, String category, String paymentType, String description, int userId) {
         this.id = id;
@@ -53,7 +62,10 @@ public class ExpenseEntity {
         this.paymentType = paymentType;
         this.description = description;
         this.userId = userId;
+        this.typeof = typeof;
     }
+
+
 
     public int getId() {
         return id;
@@ -125,6 +137,10 @@ public class ExpenseEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getTypeof() {
+        return typeof;
     }
 
     public int getUserId() {

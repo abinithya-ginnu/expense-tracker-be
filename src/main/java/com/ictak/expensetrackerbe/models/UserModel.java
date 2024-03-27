@@ -1,6 +1,7 @@
 package com.ictak.expensetrackerbe.models;
 
 public class UserModel {
+
     private String name;
     private String email;
     private String password;
@@ -10,11 +11,14 @@ public class UserModel {
     }
 
     public UserModel(int id, String name, String email, String password, String uniqueCode) {
+
         this.name = name;
         this.email = email;
         this.password = password;
         this.uniqueCode = uniqueCode;
     }
+
+
 
     public String getName() {
         return name;

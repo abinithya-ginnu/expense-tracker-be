@@ -11,6 +11,8 @@ public interface ExpenseRepository extends JpaRepository<ExpenseEntity, Integer>
 
     @Query(value = "select sum(amount) from expenses where year(date)=year(now()) and month(date)=month(now()) and user_id = ?1 group by user_id",nativeQuery = true)
     Double getMonthlyExpense(int userId);
+    @Query(value = "SELECT * FROM EXPENSES where user_id=?1",nativeQuery = true)
+    List<ExpenseEntity> getExpenses(int userId);
 
     @Query(value = "SELECT c.name, COALESCE(SUM(e.amount), 0) AS expense \n" +
                     "FROM categories c \n" +
