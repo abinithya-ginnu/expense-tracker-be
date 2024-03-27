@@ -46,7 +46,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
     @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping("/emailExists")
+    @GetMapping("/emailexists")
     public ResponseEntity<Map<String, Object>> emailExists (@RequestParam String email){
         Map<String, Object> response = new HashMap<>();
         try{
@@ -68,7 +68,7 @@ public class UserController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping("/codeExists")
+    @GetMapping("/codeexists")
     public ResponseEntity<Map<String, Object>> codeExists (@RequestParam String code){
         Map<String, Object> response = new HashMap<>();
         try{

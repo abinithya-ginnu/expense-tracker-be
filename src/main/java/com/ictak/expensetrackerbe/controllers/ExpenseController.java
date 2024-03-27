@@ -54,7 +54,7 @@ public class ExpenseController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping("/paymentTypes")
+    @GetMapping("/paymenttypes")
     public ResponseEntity<Map<String, Object>> getPaymentTypes() {
         Map<String, Object> response = new HashMap<>();
         try {
@@ -76,20 +76,22 @@ public class ExpenseController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
-    @PostMapping("/addExpense")
-    public ResponseEntity<Map<String, Object>> createExpense(@RequestHeader(name = "Authorization") String token,
-                                                             @RequestBody ExpenseEntity expense) {
+    @PostMapping("/addexpense")
+    public ResponseEntity<Map<String, Object>> createExpense (@RequestHeader(name = "Authorization") String token,
+                                                              @RequestBody ExpenseEntity expense){
         Map<String, Object> response = new HashMap<>();
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-            if (authentication.isAuthenticated()) {
+            if (authentication.isAuthenticated())
+            {
                 expense.setCreatedDate(LocalDateTime.now());
                 expense.setModifiedDate(LocalDateTime.now());
                 ExpenseEntity result = expenseRepository.save(expense);
                 response.put("status", "success");
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);
-            } else {
+            }
+            else {
                 // User is not authenticated (token validation failed)
                 response.put("status", "error");
                 response.put("message", "Token validation failed");
@@ -124,9 +126,8 @@ public class ExpenseController {
         }
         return ResponseEntity.ok(response);
     }
-
-
 }
+
 
 
 
