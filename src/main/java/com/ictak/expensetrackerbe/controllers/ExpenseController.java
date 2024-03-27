@@ -3,6 +3,8 @@ package com.ictak.expensetrackerbe.controllers;
 import com.ictak.expensetrackerbe.dbmodels.CategoryEntity;
 import com.ictak.expensetrackerbe.dbmodels.ExpenseEntity;
 import com.ictak.expensetrackerbe.dbmodels.PaymentTypeEntity;
+import com.ictak.expensetrackerbe.dbmodels.UserEntity;
+import com.ictak.expensetrackerbe.models.UserModel;
 import com.ictak.expensetrackerbe.repository.CategoryRepository;
 import com.ictak.expensetrackerbe.repository.ExpenseRepository;
 import com.ictak.expensetrackerbe.repository.PaymentTypeRepository;
@@ -33,7 +35,7 @@ public class ExpenseController {
     @GetMapping("/categories")
     public ResponseEntity<Map<String, Object>> getCategories() {
         Map<String, Object> response = new HashMap<>();
-        try{
+        try {
             List<CategoryEntity> result = categoryRepository.getCategories();
             if (result != null) {
                 response.put("status", "success");
@@ -43,7 +45,7 @@ public class ExpenseController {
                 response.put("code", 404);
                 response.put("categories", new ArrayList<>());
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             response.put("status", "error");
             response.put("code", 500);
             response.put("message", e.getMessage());
@@ -55,7 +57,7 @@ public class ExpenseController {
     @GetMapping("/paymentTypes")
     public ResponseEntity<Map<String, Object>> getPaymentTypes() {
         Map<String, Object> response = new HashMap<>();
-        try{
+        try {
             List<PaymentTypeEntity> result = paymentTypeRepository.getPaymentTypes();
             if (result != null) {
                 response.put("status", "success");
@@ -65,7 +67,7 @@ public class ExpenseController {
                 response.put("code", 404);
                 response.put("paymentTypes", new ArrayList<>());
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             response.put("status", "error");
             response.put("code", 500);
             response.put("message", e.getMessage());
@@ -75,35 +77,56 @@ public class ExpenseController {
 
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
     @PostMapping("/addExpense")
-    public ResponseEntity<Map<String, Object>> createExpense (@RequestHeader(name = "Authorization") String token,
-                                                              @RequestBody ExpenseEntity expense){
+    public ResponseEntity<Map<String, Object>> createExpense(@RequestHeader(name = "Authorization") String token,
+                                                             @RequestBody ExpenseEntity expense) {
         Map<String, Object> response = new HashMap<>();
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-            if (authentication.isAuthenticated())
-            {
+            if (authentication.isAuthenticated()) {
                 expense.setCreatedDate(LocalDateTime.now());
                 expense.setModifiedDate(LocalDateTime.now());
                 ExpenseEntity result = expenseRepository.save(expense);
                 response.put("status", "success");
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);
-            }
-            else {
+            } else {
                 // User is not authenticated (token validation failed)
                 response.put("status", "error");
                 response.put("message", "Token validation failed");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             response.put("status", "error");
             response.put("code", 500);
             response.put("message", e.getMessage());
         }
         return ResponseEntity.ok(response);
     }
-}
 
+   @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/insights")
+    public ResponseEntity<Map<String, Object>> getExpenses(@RequestParam int userId) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<ExpenseEntity> result = expenseRepository.getExpenses(userId);
+            if (result != null) {
+                response.put("status", "success");
+                response.put("code", 200);
+                response.put("insights", result);
+            } else {
+                response.put("code", 404);
+                response.put("insights", new ArrayList<>());
+            }
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("code", 500);
+            response.put("message", e.getMessage());
+        }
+        return ResponseEntity.ok(response);
+    }
+
+
+}
 
 
 
