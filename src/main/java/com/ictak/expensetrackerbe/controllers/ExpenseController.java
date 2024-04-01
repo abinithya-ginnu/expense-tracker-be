@@ -8,6 +8,7 @@ import com.ictak.expensetrackerbe.models.UserModel;
 import com.ictak.expensetrackerbe.repository.CategoryRepository;
 import com.ictak.expensetrackerbe.repository.ExpenseRepository;
 import com.ictak.expensetrackerbe.repository.PaymentTypeRepository;
+import com.ictak.expensetrackerbe.utils.OCRUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,8 @@ public class ExpenseController {
     private PaymentTypeRepository paymentTypeRepository;
     @Autowired
     private ExpenseRepository expenseRepository;
+    @Autowired
+    private OCRUtils ocrUtils;
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/categories")
@@ -78,16 +81,20 @@ public class ExpenseController {
     @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
     @PostMapping("/addexpense")
     public ResponseEntity<Map<String, Object>> createExpense (@RequestHeader(name = "Authorization") String token,
+                                                              @RequestParam boolean isOCR,
                                                               @RequestBody ExpenseEntity expense){
         Map<String, Object> response = new HashMap<>();
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
             if (authentication.isAuthenticated())
             {
-                expense.setCreatedDate(LocalDateTime.now());
-                expense.setModifiedDate(LocalDateTime.now());
-                ExpenseEntity result = expenseRepository.save(expense);
+                ExpenseEntity data = expense;
+                if (isOCR) {
+                    data = ocrUtils.extractInvoiceDetails(expense.getTitle(), expense.getUserId());
+                }
+                data.setCreatedDate(LocalDateTime.now());
+                data.setModifiedDate(LocalDateTime.now());
+                ExpenseEntity result = expenseRepository.save(data);
                 response.put("status", "success");
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);
             }

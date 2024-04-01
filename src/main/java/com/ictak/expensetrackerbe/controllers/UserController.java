@@ -7,11 +7,16 @@ import com.ictak.expensetrackerbe.repository.FamilyRepository;
 import com.ictak.expensetrackerbe.repository.UserRepository;
 import com.ictak.expensetrackerbe.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -128,5 +133,60 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/profile")
+    public ResponseEntity<Map<String, Object>> getProfileDetails (@RequestHeader(name = "Authorization") String token,
+                                                                    @RequestParam int userId)
+    {
+        Map<String, Object> response = new HashMap<>();
+        try{
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication.isAuthenticated()) {
+                UserEntity userData = userRepository.getByUserId(userId);
+                List<Map<String, Object>> familyDetails = new ArrayList<>();
+                if (userData != null) {
+                    familyDetails = familyRepository.getFamilyDetails(userData.getFamilyId());
+                }
+                response.put("status", "success");
+                response.put("code" , 200);
+                response.put("profile", userData);
+                response.put("family", familyDetails);
+            } else {
+                response.put("status", "error");
+                response.put("message", "Token validation failed");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+        } catch (Exception e){
+            response.put("status", "error");
+            response.put("code", 500);
+            response.put("message", e.getMessage());
+        }
+        return ResponseEntity.ok(response);
+    }
 
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*" )
+    @PostMapping("/profile/update")
+    public ResponseEntity<Map<String, Object>> updateProfileDetails (@RequestHeader(name = "Authorization") String token,
+                                                                  @RequestParam int id,
+                                                                  @RequestBody UserModel user)
+    {
+        Map<String, Object> response = new HashMap<>();
+        try{
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication.isAuthenticated()) {
+                userRepository.updateProfile(user.getName(), user.getPassword(), user.getEmail(), id);
+                response.put("status", "success");
+                response.put("code" , 200);
+            } else {
+                response.put("status", "error");
+                response.put("message", "Token validation failed");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+        } catch (Exception e){
+            response.put("status", "error");
+            response.put("code", 500);
+            response.put("message", e.getMessage());
+        }
+        return ResponseEntity.ok(response);
+    }
 }

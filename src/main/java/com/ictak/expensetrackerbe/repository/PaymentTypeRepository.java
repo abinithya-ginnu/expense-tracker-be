@@ -10,4 +10,7 @@ public interface PaymentTypeRepository extends JpaRepository<PaymentTypeEntity, 
 
     @Query(value = "SELECT * FROM PAYMENTTYPE",nativeQuery = true)
     List<PaymentTypeEntity> getPaymentTypes();
+
+    @Query(value = "SELECT id FROM PAYMENTTYPE WHERE type like %?1%",nativeQuery = true)
+    Integer getPaymentTypeId(String type);
 }
