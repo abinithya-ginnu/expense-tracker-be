@@ -32,26 +32,19 @@ public class ExpenseEntity {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime date;
     private String payee;
-    private String category;
+    private int category;
     @JsonProperty("payment_type")
-    private String paymentType;
+    private int paymentType;
     private String description;
     @JsonProperty("created_date")
     private LocalDateTime createdDate;
     @JsonProperty("modified_date")
     private LocalDateTime modifiedDate;
 
-    @JsonProperty("type_of")
-    private String typeof;
-
-
-
     public ExpenseEntity() {
     }
 
-
-
-    public ExpenseEntity(int id, String title, double amount, double gst, LocalDateTime date, String payee, String category, String paymentType, String description, int userId) {
+    public ExpenseEntity(int id, String title, double amount, double gst, LocalDateTime date, String payee, int category, int paymentType, String description, int userId) {
         this.id = id;
         this.title = title;
         this.amount = amount;
@@ -62,7 +55,6 @@ public class ExpenseEntity {
         this.paymentType = paymentType;
         this.description = description;
         this.userId = userId;
-        this.typeof = typeof;
     }
 
 
@@ -115,19 +107,19 @@ public class ExpenseEntity {
         this.payee = payee;
     }
 
-    public String getCategory() {
+    public int getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(int category) {
         this.category = category;
     }
 
-    public String getPaymentType() {
+    public int getPaymentType() {
         return paymentType;
     }
 
-    public void setPaymentType(String paymentType) {
+    public void setPaymentType(int paymentType) {
         this.paymentType = paymentType;
     }
 
@@ -137,10 +129,6 @@ public class ExpenseEntity {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getTypeof() {
-        return typeof;
     }
 
     public int getUserId() {
