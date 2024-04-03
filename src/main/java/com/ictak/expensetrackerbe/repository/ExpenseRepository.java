@@ -11,8 +11,10 @@ public interface ExpenseRepository extends JpaRepository<ExpenseEntity, Integer>
 
     @Query(value = "select sum(amount) from expenses where year(date)=year(now()) and month(date)=month(now()) and user_id = ?1 group by user_id",nativeQuery = true)
     Double getMonthlyExpense(int userId);
-    @Query(value = "SELECT * FROM EXPENSES where user_id=?1",nativeQuery = true)
-    List<ExpenseEntity> getExpenses(int userId);
+    @Query(value = "SELECT e.id, title, amount, date, IF(description='' OR description IS NULL,'NA',description) as description, c.name AS category \n" +
+                    "FROM EXPENSES e \n" +
+                    "JOIN categories c ON c.id = e.category AND user_id= ?1",nativeQuery = true)
+    List<Map<String, Object>> getAllExpensesOfUser(int userId);
 
     @Query(value = "SELECT c.name, COALESCE(SUM(e.amount), 0) AS expense \n" +
                     "FROM categories c \n" +
@@ -42,4 +44,16 @@ public interface ExpenseRepository extends JpaRepository<ExpenseEntity, Integer>
             "GROUP BY m.month_number\n" +
             "ORDER BY m.month_number", nativeQuery = true)
     List<Double> getExpenses(int userId, int year);
+
+    @Query(value = "WITH TRANS AS \n" +
+            "(SELECT id, title, amount, date, IF(description='' OR description IS NULL,'NA',description) as description, \n" +
+            "modified_date, user_id, true AS isIncome FROM income \n" +
+            "UNION ALL \n" +
+            "SELECT id, title, amount, date, IF(description='' OR description IS NULL,'NA',description) as description, \n" +
+            "modified_date, user_id, false AS isIncome FROM expenses) \n" +
+            "SELECT id, title, amount, date, description, isIncome \n" +
+            "FROM TRANS \n" +
+            "WHERE user_id = ?1 \n" +
+            "ORDER BY modified_date DESC;", nativeQuery = true)
+    List<Map<String, Object>> getAllTransactionsOfUser(int userId);
 }

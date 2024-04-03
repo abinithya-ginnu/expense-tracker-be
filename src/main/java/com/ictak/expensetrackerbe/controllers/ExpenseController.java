@@ -99,32 +99,9 @@ public class ExpenseController {
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);
             }
             else {
-                // User is not authenticated (token validation failed)
                 response.put("status", "error");
                 response.put("message", "Token validation failed");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-            }
-        } catch (Exception e) {
-            response.put("status", "error");
-            response.put("code", 500);
-            response.put("message", e.getMessage());
-        }
-        return ResponseEntity.ok(response);
-    }
-
-   @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping("/insights")
-    public ResponseEntity<Map<String, Object>> getExpenses(@RequestParam int userId) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            List<ExpenseEntity> result = expenseRepository.getExpenses(userId);
-            if (result != null) {
-                response.put("status", "success");
-                response.put("code", 200);
-                response.put("insights", result);
-            } else {
-                response.put("code", 404);
-                response.put("insights", new ArrayList<>());
             }
         } catch (Exception e) {
             response.put("status", "error");

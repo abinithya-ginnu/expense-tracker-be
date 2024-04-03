@@ -45,10 +45,10 @@ public interface IncomeRepository extends JpaRepository<IncomeEntity, Integer> {
             "LIMIT 10", nativeQuery = true)
     List<Map<String, Object>> getRecentTransactions(int userId);
 
-    @Query(value = "SELECT * FROM INCOME where user_id=?1", nativeQuery = true)
-    List<IncomeEntity> getIncomes(int userId);
-
-
-
+    @Query(value = "SELECT id, title, amount, date, IF(description='' OR description IS NULL,'NA',description) as description, \n" +
+                    "payer \n" +
+                    "FROM INCOME \n" +
+                    "WHERE user_id = ?1 ", nativeQuery = true)
+    List<Map<String, Object>> getAllIncomeOfUser(int userId);
 
 }
