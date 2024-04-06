@@ -51,4 +51,33 @@ public class IncomeController {
         }
         return ResponseEntity.ok(response);
     }
+
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
+    @DeleteMapping("/income/delete")
+    public ResponseEntity<Map<String, Object>> deleteIncome (@RequestHeader(name = "Authorization") String token,
+                                                             @RequestParam int id){
+
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            if (authentication.isAuthenticated())
+            {
+                incomeRepository.deleteById(id);
+                response.put("status", "success");
+                response.put("code", 200);
+                return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            }
+            else {
+                response.put("status", "error");
+                response.put("message", "Token validation failed");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+        } catch (Exception e){
+            response.put("status", "error");
+            response.put("code", 500);
+            response.put("message", e.getMessage());
+        }
+        return ResponseEntity.ok(response);
+    }
 }

@@ -32,6 +32,8 @@ dependencies {
 	implementation 'mysql:mysql-connector-java:8.0.28'  // Use the latest version
 	implementation group: 'org.json', name: 'json', version: '20240303'
 	implementation group: 'javax.mail', name: 'mail', version: '1.5.0-b01'
+	implementation group: 'org.jasypt', name: 'jasypt', version: '1.9.3'
+
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.springframework.boot:spring-boot-starter-security:3.2.3'

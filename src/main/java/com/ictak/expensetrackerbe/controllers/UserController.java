@@ -5,6 +5,8 @@ import com.ictak.expensetrackerbe.dbmodels.UserEntity;
 import com.ictak.expensetrackerbe.models.UserModel;
 import com.ictak.expensetrackerbe.repository.FamilyRepository;
 import com.ictak.expensetrackerbe.repository.UserRepository;
+import com.ictak.expensetrackerbe.utils.EmailUtils;
+import com.ictak.expensetrackerbe.utils.EncryptionUtils;
 import com.ictak.expensetrackerbe.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -182,6 +184,50 @@ public class UserController {
                 response.put("message", "Token validation failed");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
+        } catch (Exception e){
+            response.put("status", "error");
+            response.put("code", 500);
+            response.put("message", e.getMessage());
+        }
+        return ResponseEntity.ok(response);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/forgotpassword")
+    public ResponseEntity<Map<String, Object>> sendPasswordResetEmail (@RequestParam String email)
+    {
+        Map<String, Object> response = new HashMap<>();
+        try{
+            EmailUtils emailUtils = new EmailUtils();
+            EncryptionUtils util = new EncryptionUtils();
+            String encryptedEmail = util.encrypt(email);
+            if (emailUtils.sendResetPasswordMail(email, encryptedEmail)) {
+                response.put("code" , 200);
+                response.put("status", "success");
+            } else {
+                response.put("status", "error");
+                response.put("code", 500);
+            }
+        } catch (Exception e){
+            response.put("status", "error");
+            response.put("code", 500);
+            response.put("message", e.getMessage());
+        }
+        return ResponseEntity.ok(response);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @PostMapping("/resetpassword")
+    public ResponseEntity<Map<String, Object>> resetPassword (@RequestParam String key,
+                                                              @RequestBody Map<String, String> payload)
+    {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            EncryptionUtils util = new EncryptionUtils();
+            String email = util.decrypt(key);
+            userRepository.resetPassword(payload.get("confirmpassword"), email);
+            response.put("code" , 200);
+            response.put("status", "success");
         } catch (Exception e){
             response.put("status", "error");
             response.put("code", 500);

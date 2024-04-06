@@ -28,7 +28,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/profile").authenticated()
                 .antMatchers("/profile/update").authenticated()
                 .antMatchers("/insights").authenticated()
-                .antMatchers("/signup", "/login", "/emailexists", "/codeexists","/categories","/paymenttypes","/insights").permitAll()  // Allow sign-up and login without authentication
+                .antMatchers("/income/delete").authenticated()
+                .antMatchers("/expense/delete").authenticated()
+                .antMatchers("/categories").authenticated()
+                .antMatchers("/paymenttypes").authenticated()
+                .antMatchers("/signup", "/login", "/emailexists", "/codeexists", "/forgotpassword", "/resetpassword").permitAll()  // Allow these endpoints without authentication
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
