@@ -13,7 +13,8 @@ public interface ExpenseRepository extends JpaRepository<ExpenseEntity, Integer>
     Double getMonthlyExpense(int userId);
     @Query(value = "SELECT e.id, title, amount, date, IF(description='' OR description IS NULL,'NA',description) as description, c.name AS category \n" +
                     "FROM EXPENSES e \n" +
-                    "JOIN categories c ON c.id = e.category AND user_id= ?1",nativeQuery = true)
+                    "JOIN categories c ON c.id = e.category AND user_id= ?1 \n" +
+                    "ORDER BY e.modified_date DESC;",nativeQuery = true)
     List<Map<String, Object>> getAllExpensesOfUser(int userId);
 
     @Query(value = "SELECT c.name, COALESCE(SUM(e.amount), 0) AS expense \n" +

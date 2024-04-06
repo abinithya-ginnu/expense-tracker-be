@@ -48,7 +48,8 @@ public interface IncomeRepository extends JpaRepository<IncomeEntity, Integer> {
     @Query(value = "SELECT id, title, amount, date, IF(description='' OR description IS NULL,'NA',description) as description, \n" +
                     "payer \n" +
                     "FROM INCOME \n" +
-                    "WHERE user_id = ?1 ", nativeQuery = true)
+                    "WHERE user_id = ?1 \n" +
+                    "ORDER BY modified_date DESC;", nativeQuery = true)
     List<Map<String, Object>> getAllIncomeOfUser(int userId);
 
 }

@@ -25,4 +25,11 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
             "email = ?3 \n" +
             "WHERE id = ?4", nativeQuery = true)
     void updateProfile(String name, String password, String email, int userId);
+
+    @Modifying(clearAutomatically = true)
+    @Transactional
+    @Query(value = "UPDATE users \n" +
+            "SET password = ?1 \n" +
+            "WHERE email = ?2", nativeQuery = true)
+    void resetPassword(String password, String email);
 }

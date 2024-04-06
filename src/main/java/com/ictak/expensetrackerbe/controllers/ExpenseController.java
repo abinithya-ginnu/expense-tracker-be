@@ -34,19 +34,26 @@ public class ExpenseController {
     @Autowired
     private OCRUtils ocrUtils;
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
     @GetMapping("/categories")
-    public ResponseEntity<Map<String, Object>> getCategories() {
+    public ResponseEntity<Map<String, Object>> getCategories(@RequestHeader(name = "Authorization") String token) {
         Map<String, Object> response = new HashMap<>();
         try {
-            List<CategoryEntity> result = categoryRepository.getCategories();
-            if (result != null) {
-                response.put("status", "success");
-                response.put("code", 200);
-                response.put("categories", result);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication.isAuthenticated()) {
+                List<CategoryEntity> result = categoryRepository.getCategories();
+                if (result != null) {
+                    response.put("status", "success");
+                    response.put("code", 200);
+                    response.put("categories", result);
+                } else {
+                    response.put("code", 404);
+                    response.put("categories", new ArrayList<>());
+                }
             } else {
-                response.put("code", 404);
-                response.put("categories", new ArrayList<>());
+                response.put("status", "error");
+                response.put("message", "Token validation failed");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
         } catch (Exception e) {
             response.put("status", "error");
@@ -56,19 +63,26 @@ public class ExpenseController {
         return ResponseEntity.ok(response);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
     @GetMapping("/paymenttypes")
-    public ResponseEntity<Map<String, Object>> getPaymentTypes() {
+    public ResponseEntity<Map<String, Object>> getPaymentTypes(@RequestHeader(name = "Authorization") String token) {
         Map<String, Object> response = new HashMap<>();
         try {
-            List<PaymentTypeEntity> result = paymentTypeRepository.getPaymentTypes();
-            if (result != null) {
-                response.put("status", "success");
-                response.put("code", 200);
-                response.put("paymentTypes", result);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication.isAuthenticated()) {
+                List<PaymentTypeEntity> result = paymentTypeRepository.getPaymentTypes();
+                if (result != null) {
+                    response.put("status", "success");
+                    response.put("code", 200);
+                    response.put("paymentTypes", result);
+                } else {
+                    response.put("code", 404);
+                    response.put("paymentTypes", new ArrayList<>());
+                }
             } else {
-                response.put("code", 404);
-                response.put("paymentTypes", new ArrayList<>());
+                response.put("status", "error");
+                response.put("message", "Token validation failed");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
         } catch (Exception e) {
             response.put("status", "error");
@@ -97,13 +111,41 @@ public class ExpenseController {
                 ExpenseEntity result = expenseRepository.save(data);
                 response.put("status", "success");
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            } else {
+                response.put("status", "error");
+                response.put("message", "Token validation failed");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("code", 500);
+            response.put("message", e.getMessage());
+        }
+        return ResponseEntity.ok(response);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
+    @DeleteMapping("/expense/delete")
+    public ResponseEntity<Map<String, Object>> deleteExpense (@RequestHeader(name = "Authorization") String token,
+                                                             @RequestParam int id){
+
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            if (authentication.isAuthenticated())
+            {
+                expenseRepository.deleteById(id);
+                response.put("status", "success");
+                response.put("code", 200);
+                return ResponseEntity.status(HttpStatus.CREATED).body(response);
             }
             else {
                 response.put("status", "error");
                 response.put("message", "Token validation failed");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
-        } catch (Exception e) {
+        } catch (Exception e){
             response.put("status", "error");
             response.put("code", 500);
             response.put("message", e.getMessage());
